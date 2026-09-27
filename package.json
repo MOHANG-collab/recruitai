@@ -1,0 +1,55 @@
+{
+    "name": "ai-resume-scanner",
+    "version": "1.0.0",
+    "description": "AI-powered resume screening system that automatically analyzes and ranks candidates",
+    "license": "MIT",
+    "author": "Arko Jana",
+    "type": "commonjs",
+    "main": "backend/server.js",
+    "scripts": {
+        "start": "node start.js",
+        "dev": "nodemon ./backend/server.js",
+        "test": "jest --passWithNoTests"
+    },
+    "keywords": [
+        "ai",
+        "resume",
+        "screening",
+        "nlp",
+        "recruitment",
+        "hr-tech"
+    ],
+    "dependencies": {
+        "@google/generative-ai": "^0.24.1",
+        "bcrypt": "^6.0.0",
+        "cookie": "^2.0.1",
+        "cookie-parser": "^1.4.7",
+        "dotenv": "^16.6.1",
+        "express": "^5.2.1",
+        "express-rate-limit": "^8.6.2",
+        "express-validator": "^7.3.1",
+        "jsonwebtoken": "^9.0.3",
+        "jspdf": "^4.2.0",
+        "jspdf-autotable": "^5.0.7",
+        "mammoth": "^1.12.3",
+        "mongodb-memory-server": "^11.3.0",
+        "mongoose": "^9.9.4",
+        "multer": "^2.0.2",
+        "natural": "^8.1.1",
+        "nodemailer": "^8.0.10",
+        "pdf-parse": "^1.1.1"
+    },
+    "devDependencies": {
+        "jest": "^30.3.0",
+        "nodemon": "^3.0.1",
+        "supertest": "^7.2.2"
+    },
+    "engines": {
+        "node": ">=14.0.0",
+        "npm": ">=6.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MR-ARKO-JANA/-AI-Resume-Screening-System.git"
+    }
+}

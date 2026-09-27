@@ -1,0 +1,54 @@
+// Database Configuration - MongoDB connection setup
+
+const mongoose = require('mongoose');
+
+const connectDB = async () => {
+    const primaryURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_resume_screening';
+    const options = {
+        serverSelectionTimeoutMS: 5000
+    };
+
+    try {
+        await mongoose.connect(primaryURI, options);
+        console.log('MongoDB connected successfully to primary URI');
+    } catch (err) {
+        console.error('MongoDB primary connection error:', err.message);
+
+        // Fallback to local MongoDB if primary connection fails in development/test mode
+        if (process.env.NODE_ENV !== 'production' && primaryURI !== 'mongodb://127.0.0.1:27017/ai_resume_screening') {
+            try {
+                console.log('Attempting fallback connection to local MongoDB (mongodb://127.0.0.1:27017/ai_resume_screening)...');
+                await mongoose.connect('mongodb://127.0.0.1:27017/ai_resume_screening', options);
+                console.log('Connected to local MongoDB successfully');
+                return;
+            } catch (fallbackErr) {
+                console.error('Local MongoDB fallback failed:', fallbackErr.message);
+            }
+        }
+
+        // In development, if local MongoDB is not running, fall back to in-memory MongoDB
+        if (process.env.NODE_ENV !== 'production') {
+            try {
+                console.log('Attempting in-memory MongoDB fallback for local development...');
+                const { MongoMemoryServer } = require('mongodb-memory-server');
+                const mongod = await MongoMemoryServer.create();
+                const memUri = mongod.getUri();
+                await mongoose.connect(memUri);
+                console.log('Connected to in-memory MongoDB successfully:', memUri);
+                return;
+            } catch (memErr) {
+                console.error('In-memory MongoDB fallback failed:', memErr.message);
+            }
+        }
+
+        // Disable Mongoose command buffering so queries fail immediately instead of hanging for 10s
+        mongoose.set('bufferCommands', false);
+        if (err.message.includes('bad auth') || err.message.includes('authentication failed')) {
+            console.error('CRITICAL: MongoDB Atlas authentication failed (bad auth). Please reset database user password in MongoDB Atlas -> Database Access, and update MONGODB_URI on Render.');
+        } else {
+            console.error('CRITICAL: Database connection failed. Please ensure MONGODB_URI is set correctly in Render environment variables and 0.0.0.0/0 is whitelisted on MongoDB Atlas.');
+        }
+    }
+};
+
+module.exports = connectDB;
